@@ -1,6 +1,6 @@
 {
     "name": "biigle/laravel-cached-openstack",
-    "description": "A wrapper for the OpenStack SDK that caches the authentication token",
+    "description": "A wrapper for the OpenStack SDK that caches and renews the authentication token",
     "type": "library",
     "license": "MIT",
     "authors": [
