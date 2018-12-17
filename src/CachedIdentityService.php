@@ -48,15 +48,24 @@ class CachedIdentityService extends Service
     */
    protected function getCachedToken(array $options)
    {
-      // Do not consider any old cached token for the cache key.
-      unset($options['cachedToken']);
-      $key = 'openstack-token-'.md5(json_encode($options));
+      $authOptions = array_intersect_key($options, $this->api->postTokens()['params']);
+
+      // Determine a unique key for the used authentication options. We add the authUrl
+      // because it is possible to use the same credentials for a different OpenStack
+      // instance, which should use a different authentication token.
+      $optionsToHash = array_merge($authOptions, array_intersect_key($options, [
+         'authUrl' => true,
+      ]));
+      // Do not include the password in the insecure hash.
+      if (isset($optionsToHash['user'])) {
+         unset($optionsToHash['user']['password']);
+      }
+      $key = 'openstack-token-'.md5(json_encode($optionsToHash));
 
       if ($this->cache->has($key)) {
          return $this->cache->get($key);
       }
 
-      $authOptions = array_intersect_key($options, $this->api->postTokens()['params']);
       $token = $this->generateToken($authOptions);
       $cachedToken = $token->export();
       $this->cache->put($key, $cachedToken, new DateTime($cachedToken['expires_at']));
