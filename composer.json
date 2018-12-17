@@ -1,0 +1,21 @@
+{
+    "name": "biigle/laravel-cached-openstack",
+    "description": "A wrapper for the OpenStack SDK that caches the authentication token",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Martin Zurowietz",
+            "email": "martin@cebitec.uni-bielefeld.de"
+        }
+    ],
+    "require": {
+        "php-opencloud/openstack": "^3.0",
+        "illuminate/cache": "^5.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Biigle\\CachedOpenStack\\": "src/"
+        }
+    }
+}
