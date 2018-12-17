@@ -18,28 +18,12 @@ class CachedIdentityService extends Service
    protected $cache;
 
    /**
-    * Create a new instance.
+    * Set the cache instance to use.
     *
     * @param Cache $cache
-    * @param ClientInterface $client
-    *
-    * @return CachedIdentityService
     */
-   public static function factory(Cache $cache, ClientInterface $client): self
+   public function setCache(Cache $cache)
    {
-      return new static($cache, $client, new Api());
-   }
-
-   /**
-    * Create a new instance.
-    *
-    * @param Cache $cache
-    * @param ClientInterface $client
-    * @param ApiInterface $api
-    */
-   public function __construct(Cache $cache, ClientInterface $client, ApiInterface $api)
-   {
-      parent::__construct($client, $api);
       $this->cache = $cache;
    }
 
@@ -75,7 +59,7 @@ class CachedIdentityService extends Service
       $authOptions = array_intersect_key($options, $this->api->postTokens()['params']);
       $token = $this->generateToken($authOptions);
       $cachedToken = $token->export();
-      $cache->put($key, $cachedToken, new DateTime($cachedToken['expires_at']));
+      $this->cache->put($key, $cachedToken, new DateTime($cachedToken['expires_at']));
 
       return $cachedToken;
    }

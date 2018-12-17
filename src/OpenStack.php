@@ -33,7 +33,7 @@ class OpenStack extends BaseOpenStack
     *
     * @return CachedIdentityService
     */
-   protected function getCachedIdentityService(Cache $cache, array $options): Service
+   protected function getCachedIdentityService(Cache $cache, array $options): CachedIdentityService
    {
       if (!isset($options['authUrl'])) {
         throw new \InvalidArgumentException("'authUrl' is a required option");
@@ -57,6 +57,9 @@ class OpenStack extends BaseOpenStack
          $clientOptions = array_merge($options['requestOptions'], $clientOptions);
       }
 
-      return CachedIdentityService::factory($cache, new Client($clientOptions));
+      $service = CachedIdentityService::factory(new Client($clientOptions));
+      $service->setCache($cache);
+
+      return $service;
     }
 }
