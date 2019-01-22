@@ -3,6 +3,7 @@
 namespace Biigle\CachedOpenStack;
 
 use DateTime;
+use DateInterval;
 use OpenStack\Identity\v3\Service;
 use OpenStack\Common\Api\ApiInterface;
 use OpenStack\Common\Api\ClientInterface;
@@ -68,7 +69,11 @@ class CachedIdentityService extends Service
 
       $token = $this->generateToken($authOptions);
       $cachedToken = $token->export();
-      $this->cache->put($key, $cachedToken, new DateTime($cachedToken['expires_at']));
+
+      // Cache the token for 1 minute less than it's considered valid to avoid the edge case
+      // discussed here: https://github.com/mzur/laravel-openstack-swift/issues/1
+      $expiresAt = new DateTime($cachedToken['expires_at']);
+      $this->cache->put($key, $cachedToken, $expiresAt->sub(new DateInterval('PT1M')));
 
       return $cachedToken;
    }
