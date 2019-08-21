@@ -12,54 +12,54 @@ use GuzzleHttp\Middleware as GuzzleMiddleware;
 
 class OpenStack extends BaseOpenStack
 {
-   /**
-    * Create a new instance.
-    *
-    * @param Cache $cache Cache instance to use.
-    * @param array $options OpenStack options.
-    * @param Builder|null $builder OpenStack service builder.
-    */
-   public function __construct(Cache $cache, array $options = [], Builder $builder = null)
-   {
-      $options['identityService'] = $this->getCachedIdentityService($cache, $options);
-      parent::__construct($options, $builder);
-   }
+    /**
+     * Create a new instance.
+     *
+     * @param Cache $cache Cache instance to use.
+     * @param array $options OpenStack options.
+     * @param Builder|null $builder OpenStack service builder.
+     */
+    public function __construct(Cache $cache, array $options = [], Builder $builder = null)
+    {
+        $options['identityService'] = $this->getCachedIdentityService($cache, $options);
+        parent::__construct($options, $builder);
+    }
 
-   /**
-    * Create the cached identity serivce.
-    *
-    * @param Cache $cache
-    * @param array $options
-    *
-    * @return CachedIdentityService
-    */
-   protected function getCachedIdentityService(Cache $cache, array $options): CachedIdentityService
-   {
-      if (!isset($options['authUrl'])) {
-        throw new \InvalidArgumentException("'authUrl' is a required option");
-      }
+    /**
+     * Create the cached identity serivce.
+     *
+     * @param Cache $cache
+     * @param array $options
+     *
+     * @return CachedIdentityService
+     */
+    protected function getCachedIdentityService(Cache $cache, array $options): CachedIdentityService
+    {
+        if (!isset($options['authUrl'])) {
+            throw new \InvalidArgumentException("'authUrl' is a required option");
+        }
 
-      $stack = HandlerStack::create();
+        $stack = HandlerStack::create();
 
-      if (!empty($options['debugLog'])
+        if (!empty($options['debugLog'])
             && !empty($options['logger'])
             && !empty($options['messageFormatter'])
       ) {
-         $stack->push(GuzzleMiddleware::log($options['logger'], $options['messageFormatter']));
-      }
+            $stack->push(GuzzleMiddleware::log($options['logger'], $options['messageFormatter']));
+        }
 
-      $clientOptions = [
+        $clientOptions = [
          'base_uri' => Utils::normalizeUrl($options['authUrl']),
          'handler'  => $stack,
       ];
 
-      if (isset($options['requestOptions'])) {
-         $clientOptions = array_merge($options['requestOptions'], $clientOptions);
-      }
+        if (isset($options['requestOptions'])) {
+            $clientOptions = array_merge($options['requestOptions'], $clientOptions);
+        }
 
-      $service = CachedIdentityService::factory(new Client($clientOptions));
-      $service->setCache($cache);
+        $service = CachedIdentityService::factory(new Client($clientOptions));
+        $service->setCache($cache);
 
-      return $service;
+        return $service;
     }
 }
