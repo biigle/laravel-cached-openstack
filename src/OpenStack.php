@@ -4,11 +4,11 @@ namespace Biigle\CachedOpenStack;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
-use OpenStack\Common\Transport\Utils;
-use OpenStack\Common\Service\Builder;
-use OpenStack\OpenStack as BaseOpenStack;
-use Illuminate\Cache\CacheManager as Cache;
 use GuzzleHttp\Middleware as GuzzleMiddleware;
+use Illuminate\Cache\CacheManager as Cache;
+use OpenStack\Common\Service\Builder;
+use OpenStack\Common\Transport\Utils;
+use OpenStack\OpenStack as BaseOpenStack;
 
 class OpenStack extends BaseOpenStack
 {

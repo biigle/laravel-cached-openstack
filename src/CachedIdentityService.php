@@ -2,12 +2,12 @@
 
 namespace Biigle\CachedOpenStack;
 
-use DateTime;
 use DateInterval;
-use OpenStack\Identity\v3\Service;
+use DateTime;
+use Illuminate\Cache\CacheManager as Cache;
 use OpenStack\Common\Api\ApiInterface;
 use OpenStack\Common\Api\ClientInterface;
-use Illuminate\Cache\CacheManager as Cache;
+use OpenStack\Identity\v3\Service;
 
 class CachedIdentityService extends Service
 {
