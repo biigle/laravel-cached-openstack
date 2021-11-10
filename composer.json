@@ -17,5 +17,8 @@
         "psr-4": {
             "Biigle\\CachedOpenStack\\": "src/"
         }
+    },
+    "require-dev": {
+        "vimeo/psalm": "^4.12"
     }
 }
