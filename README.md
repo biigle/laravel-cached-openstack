@@ -22,3 +22,21 @@ $options = [
 
 $openstack = new OpenStack($cache, $options);
 ```
+
+### Options
+
+You can include cache options in the OpenStack options array. Example:
+
+```php
+$options = [
+   'cacheOptions' => [
+      'ttl' => 3600,
+   ],
+];
+
+$openstack = new OpenStack($cache, $options);
+```
+
+Available options:
+
+- `ttl`: Overrides the duration that the authentication token should be cached in seconds. If not set, the token is cached until its `expires_at` [minus 60 seconds](https://github.com/mzur/laravel-openstack-swift/issues/1). If `expires_at` is less than the specified `ttl`, `ttl` is ignored.

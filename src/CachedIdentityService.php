@@ -19,6 +19,13 @@ class CachedIdentityService extends Service
     protected $cache;
 
     /**
+     * Options for caching.
+     *
+     * @var array
+     */
+    protected $cacheOptions;
+
+    /**
      * Set the cache instance to use.
      *
      * @param Cache $cache
@@ -26,6 +33,16 @@ class CachedIdentityService extends Service
     public function setCache(Cache $cache)
     {
         $this->cache = $cache;
+    }
+
+    /**
+     * Set the cache options to use.
+     *
+     * @param array $options
+     */
+    public function setCacheOptions(array $options)
+    {
+        $this->cacheOptions = $options;
     }
 
     /**
@@ -55,8 +72,8 @@ class CachedIdentityService extends Service
         // because it is possible to use the same credentials for a different OpenStack
         // instance, which should use a different authentication token.
         $optionsToHash = array_merge($authOptions, array_intersect_key($options, [
-         'authUrl' => true,
-      ]));
+            'authUrl' => true,
+        ]));
         // Do not include the password in the insecure hash.
         if (isset($optionsToHash['user'])) {
             unset($optionsToHash['user']['password']);
@@ -70,10 +87,22 @@ class CachedIdentityService extends Service
         $token = $this->generateToken($authOptions);
         $cachedToken = $token->export();
 
-        // Cache the token for 1 minute less than it's considered valid to avoid the edge case
-        // discussed here: https://github.com/mzur/laravel-openstack-swift/issues/1
         $expiresAt = new DateTime($cachedToken['expires_at']);
-        $this->cache->put($key, $cachedToken, $expiresAt->sub(new DateInterval('PT1M')));
+        // Cache the token for 1 minute less than it's considered valid to avoid the
+        // edge case discussed here:
+        // https://github.com/mzur/laravel-openstack-swift/issues/1
+        $expiresAt = $expiresAt->sub(new DateInterval('PT1M'))
+
+        if (is_array($this->cacheOptions) && array_key_exists($this->cacheOptions, 'ttl')) {
+            $seconds = $this->cacheOptions['ttl'];
+            $ttl = new DateTime("+{$seconds} seconds");
+
+            if ($ttl < $expiresAt) {
+                $expiresAt = $ttl;
+            }
+        }
+
+        $this->cache->put($key, $cachedToken, $expiresAt);
 
         return $cachedToken;
     }

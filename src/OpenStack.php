@@ -60,6 +60,10 @@ class OpenStack extends BaseOpenStack
         $service = CachedIdentityService::factory(new Client($clientOptions));
         $service->setCache($cache);
 
+        if (array_key_exists('cacheOptions', $options)) {
+            $service->setCacheOptions($options['cacheOptions']):
+        }
+
         return $service;
     }
 }
