@@ -91,7 +91,7 @@ class CachedIdentityService extends Service
         // Cache the token for 1 minute less than it's considered valid to avoid the
         // edge case discussed here:
         // https://github.com/mzur/laravel-openstack-swift/issues/1
-        $expiresAt = $expiresAt->sub(new DateInterval('PT1M'))
+        $expiresAt = $expiresAt->sub(new DateInterval('PT1M'));
 
         if (is_array($this->cacheOptions) && array_key_exists($this->cacheOptions, 'ttl')) {
             $seconds = $this->cacheOptions['ttl'];
