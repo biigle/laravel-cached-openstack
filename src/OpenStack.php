@@ -61,7 +61,7 @@ class OpenStack extends BaseOpenStack
         $service->setCache($cache);
 
         if (array_key_exists('cacheOptions', $options)) {
-            $service->setCacheOptions($options['cacheOptions']):
+            $service->setCacheOptions($options['cacheOptions']);
         }
 
         return $service;
