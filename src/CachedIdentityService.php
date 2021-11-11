@@ -93,7 +93,7 @@ class CachedIdentityService extends Service
         // https://github.com/mzur/laravel-openstack-swift/issues/1
         $expiresAt = $expiresAt->sub(new DateInterval('PT1M'));
 
-        if (is_array($this->cacheOptions) && array_key_exists($this->cacheOptions, 'ttl')) {
+        if (is_array($this->cacheOptions) && array_key_exists('ttl', $this->cacheOptions)) {
             $seconds = $this->cacheOptions['ttl'];
             $ttl = new DateTime("+{$seconds} seconds");
 
